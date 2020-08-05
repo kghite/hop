@@ -9,6 +9,9 @@
  * Published: /safety_onboard, /estop
  */
 
+#include <led_driver.h>
+#include <motor_driver.h>
+
 #include <ros/ros.h>
 #include <sensor_msgs/Image.h>
 #include <sensor_msgs/Imu.h>
