@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 <package format="2">
-  <name>hop-onboard</name>
+  <name>hop_onboard</name>
   <version>0.0.0</version>
   <description>The hop-onboard package</description>
 

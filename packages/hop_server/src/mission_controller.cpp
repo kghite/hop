@@ -11,8 +11,6 @@
 #include <std_msgs/Int8.h>
 #include <geometry_msgs/Twist.h>
 
-#include "utils.h"
-
 // Declaring publishers
 ros::Publisher cmd_vel_pub;
 ros::Publisher safety_pub;
@@ -47,6 +45,9 @@ class FSM {
         std_msgs::Int8 m_safety_onboard;
         std_msgs::Int8 m_estop;
 
+        // Declaring all transformed sensor variables
+        std::vector<uint8_t> m_camera_frame;
+
         // Declaring methods
         void boot();
         void stand();
@@ -70,10 +71,11 @@ class FSM {
 
 
 /*
-* This is equivelent to the init() method in python
+* Init finite state machine
 */
 FSM::FSM(ros::NodeHandle n) {
-    m_imu = std::vector <float> (512, 0.0); // fill IMU with zeros
+
+    return;
 }
 
 
@@ -87,7 +89,7 @@ void FSM::boot() {
     if (m_loops_to_spend_in_boot - m_loops_spent_in_boot <= 0) {
 
         // Start by standing up
-        m_state = stand_up;
+        m_state = standing;
     }
     else {
 
@@ -101,6 +103,21 @@ void FSM::boot() {
  */
 void FSM::stand() {
 
+    ROS_INFO("Standing");
+
+    m_state = stable;
+
+}
+
+
+/*
+ * Balance in a stable standing state
+ */
+void FSM::balance() {
+
+    ROS_INFO("Balancing");
+
+    m_state = stable;
 }
 
 
@@ -108,6 +125,8 @@ void FSM::stand() {
  * React to a fall
  */
 void FSM::recover() {
+
+    ROS_INFO("Recovering");
 
     m_state = standing;
 }
@@ -118,20 +137,24 @@ void FSM::recover() {
  */
 void FSM::estop() {
 
+    ROS_INFO("Emergency Stopping");
+
     m_state = fallen;
 }
 
 
 /*
- * Stop the robot
+ * Shut down the robot
  */
 void FSM::stop() {
+
     ROS_INFO("Stopping");
 
     m_cmd_vel.linear.x = 0.0;
     m_cmd_vel.angular.z = 0.0;
     cmd_vel_pub.publish(m_cmd_vel);
 }
+
 
 /*
  * Testing state for development
@@ -152,6 +175,7 @@ void FSM::test() {
 void FSM::cam_callback(const sensor_msgs::Image msg) {
 
     m_image = msg;
+    m_camera_frame = msg.data;
     // TODO: Convert to opencv image
 }
 
@@ -226,7 +250,7 @@ int main(int argc, char **argv) {
                 break;
 
             case stable:
-                mission_controller.stable();
+                mission_controller.balance();
                 break;
 
             case fallen:

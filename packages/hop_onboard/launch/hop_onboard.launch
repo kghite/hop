@@ -1,0 +1,13 @@
+<?xml version="1.0"?>
+
+<launch>
+
+	<!-- Camera -->
+	<include file="$(find raspicam_node)/launch/camerav1_1280x720.launch" />
+
+	<!-- IMU -->
+	<node name="imu_streamer" pkg="hop_onboard" type="hop_onboard" />
+
+	<!-- Hindbrain -->
+
+</launch>

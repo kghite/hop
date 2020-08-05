@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 <package format="2">
-  <name>hop-server</name>
+  <name>hop_server</name>
   <version>0.0.0</version>
   <description>The hop-server package</description>
 
