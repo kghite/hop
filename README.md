@@ -40,4 +40,6 @@ A wheeled jumping robot for controls and character development
 
 * [Install ROS Melodic for RPi Zero W](https://labs.fpv.umb.sk/ros/)
 * Clone the `rpi` branch of the `hop` repo into `catkin_ws/src`
-* From the `hop` directory, enable running the startup script on boot -> `chmod +x rpi-boot.sh && sudo cp rpi-boot.sh /etc/init.d/`
+* Enable running the startup script on boot
+  * `sudo vi /etc/rc.local` 
+  * Add `sudo bash /home/<user>/catkin_ws/src/hop/rpi-boot.sh &` before the `exit 0` line
