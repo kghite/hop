@@ -3,6 +3,7 @@ Standalone Hop Controller (no ROS version)
 """
 
 import time
+import configparser
 from enum import Enum
 
 from hop import Hop
@@ -12,10 +13,12 @@ class State(Enum):
 	booting = 1
 	standing = 2
 	stable = 3
-	fallen = 4
-	estopped = 5
-	stopping = 6
-	testing = 7
+	teleoping = 4
+	executing = 5
+	fallen = 6
+	estopped = 7
+	stopping = 8
+	testing = 9
 
 
 class FSM:
@@ -65,6 +68,28 @@ class FSM:
 			self.robot.red_led.off()
 			self.robot.green_led.on()
 			print('Balancing')
+			self.prev_state = self.state
+
+	"""
+	Move to follow teleop while balancing
+	"""
+	def teleop(self):
+		# Initial loop
+		if self.prev_state != self.state:
+			self.robot.red_led.blink()
+			self.robot.green_led.on()
+			print('Teleoping')
+			self.prev_state = self.state
+
+	"""
+	Execute file of custom mission states
+	"""
+	def execute(self):
+		# Initial loops
+		if self.prev_state != self.state:
+			self.robot.red_led.blink()
+			self.robot.green_led.on()
+			print('Executing Mission')
 			self.prev_state = self.state
 
 	"""
@@ -118,13 +143,19 @@ class FSM:
 
 
 if __name__ == '__main__':
-	robot = Hop(red_led_pin=5, green_led_pin=6,
-					left_servo_pin=7, right_servo_pin=8,
-					left_motor_forward=18, left_motor_backward=23,
-					right_motor_forward=24, right_motor_backward=25)
+	# Get robot config
+	config = configparser.ConfigParser()
+	config.read('example.ini')
+
+	# Set up controller
+	c = config['Expression']
+	robot = Hop(red_led_pin=c[r_led], green_led_pin=c[g_led],
+					left_servo_pin=c[l_servo], right_servo_pin=c[r_servo],
+					left_motor_forward=c[l_motor_f], left_motor_backward=c[l_motor_b],
+					right_motor_forward=c[r_motor_f], right_motor_backward=c[r_motor_b])
 	fsm = FSM(robot)
 
-	# Run mission controller at 10hz
+	# Run controller at 10hz
 	while(True):
 		if fsm.state is State.booting:
 			fsm.boot()
@@ -132,6 +163,10 @@ if __name__ == '__main__':
 			fsm.stand()
 		elif fsm.state is State.stable:
 			fsm.balance()
+		elif fsm.state is State.teleoping:
+			fsm.teleop()
+		elif fsm.state is State.executing:
+			fsm.execute()
 		elif fsm.state is State.fallen:
 			fsm.recover()
 		elif fsm.state is State.estopped:

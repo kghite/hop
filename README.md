@@ -32,14 +32,25 @@ A wheeled jumping robot for controls and character development
 
 **FSM Flow**
 
+![FSM Diagram](https://github.com/kghite/hop/blob/master/docs/fsm_diagram.png?raw=true)
+
+The FSM states and corresponding LED patterns can be found [here](docs/fsm.md).
+
 **Controls Modules**
 
 ## Setup Instructions
 
-**Onboard Rpi**
+**Install and Startup - Onboard Rpi**
 
 * [Install ROS Melodic for RPi Zero W](https://labs.fpv.umb.sk/ros/)
 * Clone the `rpi` branch of the `hop` repo into `catkin_ws/src`
 * Enable running the startup script on boot
   * `sudo vi /etc/rc.local` 
   * Add `sudo bash /home/<user>/catkin_ws/src/hop/rpi-boot.sh &` before the `exit 0` line
+
+**Install and Startup - Offboard Server**
+
+**Running the Robot**
+
+* Running a state sequence mission file ->
+* Running teleop ->
