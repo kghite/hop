@@ -3,6 +3,7 @@ Camera Controller
 """
 
 import picamera
+import picamera.array
 import cv2
 import time
 
@@ -11,7 +12,7 @@ class Camera:
 
 	def __init__(self):
 		self.cam = picamera.PiCamera()
-		self.raw = picamera.PiRGBArray()
+		self.raw = picamera.array.PiRGBArray(self.cam)
 
 		# Camera setup
 		self.cam.resolution = (640, 480)
@@ -24,16 +25,24 @@ class Camera:
 		* image - numpy array (640, 480)
 	"""
 	def get_cv_frame(self):
-		self.cam.capture(raw, format='bgr')
-		image = raw.array
+		self.cam.capture(self.raw, format='bgr')
+		image = self.raw.array
 
 		return image
+
+	"""
+	Save a frame from the camera
+	"""
+	def save_frame(self):
+		image = self.get_cv_frame()
+		cv2.imwrite('test.png', image)
+		print('Wrote image to current directory')
 
 	"""
 	View camera video stream until 'q'
 	"""
 	def show_stream(self):
-		for frame in self.cam.capture_continuous(raw, format="bgr", use_video_port=True):
+		for frame in self.cam.capture_continuous(self.raw, format="bgr", use_video_port=True):
 			image = frame.array
 
 			cv2.imshow("Picamera", image)
@@ -46,5 +55,7 @@ class Camera:
 
 if __name__ == '__main__':
 	# Test camera stream
+	print("Initializing camera")
 	c = Camera()
-	c.show_stream()
+	print("Camera setup complete")
+	c.save_frame()
