@@ -5,7 +5,7 @@ IMU Controller
 import time
 import board
 import busio
-from adafruit_lsm6ds import LSM6DS33
+from adafruit_lsm6ds.lsm6ds33 import LSM6DS33
 
 
 class IMU:
@@ -38,7 +38,7 @@ class IMU:
 	Return:
 		* readings - array length n
 	"""
-	def get_stream(self, n, hz, show=false):
+	def get_stream(self, n, hz, show=False):
 		period = 1.0 / float(hz)
 		readings = []
 		for _ in range(n):
@@ -46,7 +46,7 @@ class IMU:
 			while (time.time() - time_before) < period:
 				time.sleep(0.001)
 			readings.append(self.sensor)
-			if test:
+			if show:
 				print("IMU accel: ", self.sensor.acceleration)
 				print("IMU gyro: ", self.sensor.gyro)
 

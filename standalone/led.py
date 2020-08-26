@@ -66,11 +66,11 @@ class Led(object):
 
 	#### PRIVATE ####
 
-	def __turnledon(self, pin):
-		GPIO.output(pin, GPIO.LOW)
+	def __turnledon(self):
+		GPIO.output(self.led_pin, GPIO.HIGH)
 
-	def __turnledoff(self, pin):
-		GPIO.output(pin, GPIO.HIGH)
+	def __turnledoff(self):
+		GPIO.output(self.led_pin, GPIO.LOW)
 
 	def __blink_pin(self):
 		while not self.pin_stop.is_set():
@@ -90,8 +90,17 @@ class Led(object):
 if __name__ == '__main__':
 	# Test led modes
 	red = Led(5)
+	green = Led(6)
+	red.off()
+	green.on()
+	time.sleep(5)
 	red.on()
+	green.off()
 	time.sleep(5)
 	red.blink()
+	green.blink()
 	time.sleep(5)
 	red.off()
+	green.off()
+	red.reset()
+	green.reset()
