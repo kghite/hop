@@ -2,6 +2,8 @@
 
 A wheeled jumping robot for controls and character development
 
+![Robot Image](https://github.com/kghite/hop/blob/master/docs/hop.jpg?raw=true)
+
 ## Feature Demos
 
 **Stair Climb**
